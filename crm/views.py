@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-
+from django.contrib import messages
 from crm.models import Student,Course
 
 def index(request):
@@ -23,6 +23,10 @@ def add(request):
         room = request.POST.get('room','')
         email = request.POST.get('email','')
         description = request.POST.get('description','')
+
+        if first_name == '' or last_name == '' or room == '' or course_id == '' or email == '' or description == '':
+            messages.add_message(request, messages.ERROR, 'Заполните все поля!')
+            return redirect('/add')
 
         student = Student()
         student.first_name = first_name
@@ -121,6 +125,12 @@ def delete(request):
     id = request.GET.get('id')
     student = Student.objects.get(pk = id)
     student.delete()
+
+    return redirect('/')
+
+def deleteAll(request):
+    students = Student.objects.all()
+    students.delete()
 
     return redirect('/')
 

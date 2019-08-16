@@ -29,5 +29,6 @@ urlpatterns = [
     path('add-course',courseAdd),
     path('course-descript',courseDescript),
     path('edit-course',courseEdit),
-    path('delete-course',deleteCourse)
+    path('delete-course',deleteCourse),
+    path('delete-all',deleteAll)
 ]

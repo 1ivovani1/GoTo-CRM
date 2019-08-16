@@ -2,8 +2,17 @@
   {%block title%}Участники{%endblock%}
 
 {%block content%}
-<div class="alert alert-info" role="alert" style="width: 18%;">
-  <a href="/add" style="text-decoration: none;">Добавить участника</a>
+<div class="row">
+  <div class="col-3">
+    <div class="alert alert-info" role="alert">
+      <a href="/add" style="text-decoration: none;"><center>Добавить участника</center></a>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="alert alert-info" role="alert">
+      <a href="/delete-all" style="text-decoration: none;" onclick="return confirm('Вы точно хотите удалить всех?')"><center>Удалить всех</center></a>
+    </div>
+  </div>
 </div>
 
   <h1 >Участники</h1>

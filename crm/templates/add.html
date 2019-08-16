@@ -2,6 +2,11 @@
   {%block title%}Добавить участника{%endblock%}
 
 {%block content%}
+{% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Ошибка! </strong>{{ message }}
+        </div>
+    {% endfor %}
 <div class="row">
   <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
     <form action="/add" method="post">
