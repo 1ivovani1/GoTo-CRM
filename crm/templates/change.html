@@ -1,0 +1,43 @@
+{% extends 'base.html'%}
+  {%block title%}Изменить{%endblock%}
+  {%block content%}
+  <div class="alert alert-info" role="alert">
+    <a style="text-decoration: none;" href="/student?id={{student.id}}">{{student.first_name}}</a>
+  </div>
+
+
+<form action="/edit?id={{student.id}}" method="post">
+  {% csrf_token%}
+  <div class="form-group">
+    <label>Имя</label>
+    <input class="form-control" type="text" name='first_name' value="{{student.first_name}}">
+  </div>
+  <div class="form-group">
+    <label>Фамилия</label>
+    <input type="text" class="form-control" name='last_name' value="{{student.last_name}}">
+  </div>
+  <div class="form-group">
+    <label>Комната</label>
+    <input class="form-control" type="text" name='room' value="{{student.room}}"><br>
+  </div>
+  <div class="form-group">
+    <label>email</label>
+    <input type="text" class="form-control" name='email' value="{{student.email}}"><br>
+  </div>
+  <div class="form-group">
+    <label>Имя</label>
+    <textarea name="description" class="form-control">{{student.description}}</textarea><br>
+  </div>
+  <div class="form-group">
+    <label>Направление</label>
+    <select name="course_id" class="form-control">
+    <option value="">Нет</option>
+       {%for course in courses%}
+       <option value="{{course.id}}" {% if course.id == student.course.id %} selected {%endif%}>{{course.name}}</option>
+      {%endfor%}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-outline-primary">Подтвердить!</button>
+</form>
+
+{%endblock%}

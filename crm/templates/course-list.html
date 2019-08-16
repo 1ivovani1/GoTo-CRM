@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+  {%block title%}Список курсов{%endblock%}
+
+{%block content%}
+<h1>Курсы GoTo</h1>
+<div class="alert alert-info" role="alert">
+  <a style="text-decoration: none;" href="/add-course">Добавить курс</a>
+</div>
+<ul class="list-group">
+    {% for course in courseList%}
+      <li class="list-group-item"><a style="text-decoration: none;" href="/course-descript?id={{course.id}}">{{course.name}}</a></li>
+   {%endfor%}
+  </ul>
+{%endblock%}

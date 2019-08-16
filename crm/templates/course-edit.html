@@ -1,0 +1,32 @@
+{% extends 'base.html'%}
+  {%block title%} Изменение курса{%endblock%}
+
+{%block content%}
+<div class="row">
+  <div class="col-2">
+    <div class="alert alert-info" role="alert" >
+      <a style="text-decoration: none;" href="/course-descript?id={{course.id}}"><center>Назад</center></a>
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+    <form action="/edit-course?id={{course.id}}" method="post">
+      {% csrf_token%}
+      <div class="form-group">
+        <label>Название курса</label>
+        <input class="form-control" type="text" name='name' value="{{course.name}}">
+      </div>
+      <div class="form-group">
+        <label>Преподаватель</label>
+        <input class="form-control" type="text" name='teacher' value="{{course.teacher}}"><br>
+      </div>
+      <button type="submit" class="btn btn-outline-primary">Подтвердить!</button>
+    </form>
+    
+  </div>
+</div>
+
+
+{%endblock%}

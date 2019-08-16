@@ -1,0 +1,28 @@
+{% extends 'base.html'%}
+  {%block title%}Информация об участнике{%endblock%}
+
+{%block content%}
+<div class="row">
+  <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+    <div class="alert alert-info" role="alert" >
+    <a style="text-align: center" href="/edit?id={{student.id}}"><center>Изменить</center></a>
+  </div>
+  </div>
+    <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+    <div class="alert alert-info" role="alert">
+     <a style="text-align: center;" href="/delete?id={{student.id}}" onclick="return confirm('Точно хотите удалить!')"><center>Удалить</center></a>
+   </div>
+  </div>
+</div>
+  <h1>{{student.first_name}} {{student.last_name}}</h1>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Комната:</strong> {{student.room}}</li>
+    <li class="list-group-item"><strong>Направление:</strong>{{student.course.name}}</li>
+    <li class="list-group-item"><strong>Учитель:</strong>{{student.course.teacher}}</li>
+    <li class="list-group-item"><strong>E-mail:</strong>{{student.email}}</li>
+    <li class="list-group-item">
+      <strong>Описание:</strong><br>
+      {{student.description}}
+    </li>
+  </ul>
+  {%endblock%}

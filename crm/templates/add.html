@@ -1,0 +1,46 @@
+{% extends 'base.html'%}
+  {%block title%}Добавить участника{%endblock%}
+
+{%block content%}
+<div class="row">
+  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+    <form action="/add" method="post">
+      {% csrf_token%}
+      <div class="form-group">
+        <label for="first_name">Имя</label>
+        <input type="text" class="form-control" name='first_name' placeholder="Имя">
+      </div>
+      <div class="form-group">
+        <label for="last_name">Фамилия</label>
+        <input class="form-control" type="text" name='last_name' placeholder="Фамилия">
+      </div>
+      <div class="form-group">
+        <label for="room">Комната</label>
+        <input class="form-control" type="text" name='room' placeholder="Комната">
+      </div>
+      <div class="form-group">
+        <label for="email">email</label>
+        <input class="form-control" type="text" name='email' placeholder="email">
+      </div>
+      <div class="form-group">
+        <label for="description">Описание</label>
+        <textarea class="form-control" name="description" placeholder="Описание"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="course_id">Направление</label>
+        <select class="form-control" name="course_id">
+        <option value="">Нет</option>
+          {%for course in courses%}
+             <option value="{{course.id}}">{{course.name}}</option>
+          {%endfor%}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-outline-primary">Подтвердить!</button>
+    </form>
+  </div>
+  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+  <img class="img-fluid" src="https://class.goto.msk.ru/logo.jpg" alt="">
+  </div>
+</div>
+
+{%endblock%}

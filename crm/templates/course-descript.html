@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+  {%block title%}Описание курса{%endblock%}
+
+{%block content%}
+
+  <div class="row">
+    <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+      <div class="alert alert-info" role="alert" >
+      <a style="text-align: center" href="/edit-course?id={{course.id}}"><center>Изменить</center></a>
+    </div>
+    </div>
+      <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+      <div class="alert alert-info" role="alert">
+       <a style="text-align: center;" href="/delete-course?id={{course.id}}" onclick="return confirm('Точно хотите удалить!')"><center>Удалить</center></a>
+     </div>
+    </div>
+  </div>
+
+  <h1>{{course.name}}</h1>
+  <ul class="list-group">
+    <li class="list-group-item"><strong>Название курса:</strong> {{course.name}}</li>
+    <li class="list-group-item"><strong>Учитель:</strong>{{course.teacher}}</li>
+  </ul>
+  <h2>Список ученков на курсе {{course.name}}</h2>
+  <ol class="list-group">
+    {% for student in students %}
+      <li class="list-group-item"><a href="/student?id={{student.id}}">{{student}}</a></li>
+    {% endfor %}
+  </ol>
+  {%endblock%}
