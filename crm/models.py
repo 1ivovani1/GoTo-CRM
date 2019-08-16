@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Course(models.Model):
@@ -19,5 +20,16 @@ class Student(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
 
+class Token(models.Model):
+    inviteToken = models.CharField(max_length = 50)
 
-# Create your models here.
+    def __str__(self):
+        return self.inviteToken
+
+class Comment(models.Model):
+     author = models.ForeignKey(User, on_delete = models.SET_NULL,null = True)
+     whom_comm = models.ForeignKey(Student, on_delete = models.SET_NULL,null = True)
+     text = models.TextField(max_length = 1500)
+
+     def __str__(self):
+         return self.author + " -> " + self.whom_comm

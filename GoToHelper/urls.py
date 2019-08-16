@@ -30,5 +30,8 @@ urlpatterns = [
     path('course-descript',courseDescript),
     path('edit-course',courseEdit),
     path('delete-course',deleteCourse),
-    path('delete-all',deleteAll)
+    path('delete-all',deleteAll),
+    path('register', register),
+    path('login', login_page),
+    path('logout', logout_page)
 ]

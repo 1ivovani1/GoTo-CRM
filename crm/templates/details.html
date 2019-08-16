@@ -25,4 +25,31 @@
       {{student.description}}
     </li>
   </ul>
+  <div class="row" style="margin-top: 30px;">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
+      <form method='post' action="/student?id={{student.id}}">
+         {% csrf_token %}
+        <h3>Оставьте свой комментарий,{{user.username}}!</h3>
+        <div class="form-group">
+          <textarea name="text"class="form-control" placeholder="Введите свой комментарий"></textarea>
+        </div>
+        <button class="btn  btn-primary" type="submit">Оставить комментарий</button>
+      </form>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"  style="height:5vh;owerflow-y:visible;">
+        {%for comment in comments%}
+  <div class="card">
+    <div class="card-header">Комментарий от <span class="text-primary">{{comment.author.username}}</span></div>
+      <div class="card-body">
+        <blockquote class="blockquote mb-0">
+          <p>{{comment.text}}</p>
+            <footer class="blockquote-footer">Для кого комментарий:{{comment.whom_comm.first_name}} {{comment.whom_comm.last_name}}</footer>
+        </blockquote>
+      </div>
+    </div>
+{%endfor%}
+    </div>
+  </div>
+
+
   {%endblock%}

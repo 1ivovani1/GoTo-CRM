@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <title>Регистрация</title>
+</head>
+<body>
+  <div class="container">
+  <div class="row">
+    <div class="col-12">
+      <center>
+      <center><img class="img-fluid" src="https://class.goto.msk.ru/logo.jpg" alt="" height="100px" width="100px"></center>
+
+        {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>Ошибка! </strong>{{ message }}
+                </div>
+            {% endfor %}
+      <form method='post' action='/register'>
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal">Пожалуйста зарегистрируйтесь</h1>
+        <div class="form-group">
+          <input style="width:40%" type="text" name='login'  id="inputEmail" class="form-control" placeholder="Логин" required="" autofocus="">
+        </div>
+
+    <div class="form-group">
+      <input style="width:40%" type="email" name='email' id="inputEmail" class="form-control" placeholder="e-mail" required="">
+    </div>
+
+    <div class="form-group">
+      <input style="width:40%" type="password" name='password' id="pass" class="form-control" placeholder="Пароль" required="">
+    </div>
+
+    <div class="form-group">
+      <input style="width:40%" type="password" class="form-control" id='pass_reap' placeholder="Повторите пароль" required="">
+        <center>
+          <small class="d-none err-mess">Пароли не совпадают</small>
+          <small>Минимальная длина пароля - 6</small>
+        </center>
+    </div>
+    <div class="form-group">
+      <input style="width:20%" name="inviteToken" type="text" class="form-control" placeholder="Инвайт код" required="">
+     </div>
+
+        <button class="btn  btn-primary d-none" id='create'type="submit">Создать аккаунт</button>
+      </form>
+      </center>
+    </div>
+
+  </div>
+  </div>
+  <script src="static/valid-password.js"></script>
+
+
+</body>
+</html>
