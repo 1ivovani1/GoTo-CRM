@@ -25,7 +25,7 @@ SECRET_KEY = 'p-7+_$lcsi+q*+=biqe+88kpx9r&4ay3cw#1m3r@_p3&bar-aq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -119,3 +119,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "postmaster@sandbox06dc90b7a6fb4f9d94fdcdd31567fd3d.mailgun.org"
+EMAIL_HOST_PASSWORD = "5041623ec3eb6b575429e2e64f26c8d8-898ca80e-74466eef"
+EMAIL_USE_TLS = True
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+AUTH_USER_MODEL = 'crm.CustomUser'

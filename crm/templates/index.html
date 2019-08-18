@@ -2,6 +2,8 @@
   {%block title%}Участники{%endblock%}
 
 {%block content%}
+
+{%if isAdmin == True %}
 <div class="row">
   <div class="col-3">
     <div class="alert alert-info" role="alert">
@@ -14,7 +16,7 @@
     </div>
   </div>
 </div>
-
+{%endif%}
   <h1 >Участники</h1>
   <form class="form-inline my-2 my-lg-0" >
       <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди участника" aria-label="Search" id="search">

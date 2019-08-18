@@ -9,7 +9,7 @@
     {% endfor %}
 <div class="row">
   <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-    <form action="/add" method="post">
+    <form action="/add" method="post" enctype="multipart/form-data">
       {% csrf_token%}
       <div class="form-group">
         <label for="first_name">Имя</label>
@@ -31,6 +31,11 @@
         <label for="description">Описание</label>
         <textarea class="form-control" name="description" placeholder="Описание"></textarea>
       </div>
+
+      <div class="form-group">
+        <label for="exampleFormControlFile1">Загрузите фотографию</label>
+        <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1">
+      </div>
       <div class="form-group">
         <label for="course_id">Направление</label>
         <select class="form-control" name="course_id">
@@ -44,7 +49,7 @@
     </form>
   </div>
   <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-  <img class="img-fluid" src="https://class.goto.msk.ru/logo.jpg" alt="">
+  <img class="img-fluid" src="static/img/logo.jpg" alt="">
   </div>
 </div>
 

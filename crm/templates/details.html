@@ -2,18 +2,22 @@
   {%block title%}Информация об участнике{%endblock%}
 
 {%block content%}
+{% if asAdmin == True %}
 <div class="row">
-  <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
     <div class="alert alert-info" role="alert" >
     <a style="text-align: center" href="/edit?id={{student.id}}"><center>Изменить</center></a>
   </div>
   </div>
-    <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
+    <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
     <div class="alert alert-info" role="alert">
      <a style="text-align: center;" href="/delete?id={{student.id}}" onclick="return confirm('Точно хотите удалить!')"><center>Удалить</center></a>
    </div>
   </div>
 </div>
+{%endif%}
+
+  <img src="{{student.avatar.url}}" class='img-fluid' style='height: 150px;width: 150px;' alt="картинка юзера">
   <h1>{{student.first_name}} {{student.last_name}}</h1>
   <ul class="list-group">
     <li class="list-group-item"><strong>Комната:</strong> {{student.room}}</li>
@@ -36,7 +40,7 @@
         <button class="btn  btn-primary" type="submit">Оставить комментарий</button>
       </form>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"  style="height:5vh;owerflow-y:visible;">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"  style="height:200px;owerflow:auto;">
         {%for comment in comments%}
   <div class="card">
     <div class="card-header">Комментарий от <span class="text-primary">{{comment.author.username}}</span></div>
