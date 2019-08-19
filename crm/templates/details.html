@@ -2,7 +2,7 @@
   {%block title%}Информация об участнике{%endblock%}
 
 {%block content%}
-{% if asAdmin == True %}
+
 <div class="row">
   <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
     <div class="alert alert-info" role="alert" >
@@ -15,20 +15,28 @@
    </div>
   </div>
 </div>
-{%endif%}
 
-  <img src="{{student.avatar.url}}" class='img-fluid' style='height: 150px;width: 150px;' alt="картинка юзера">
-  <h1>{{student.first_name}} {{student.last_name}}</h1>
-  <ul class="list-group">
-    <li class="list-group-item"><strong>Комната:</strong> {{student.room}}</li>
-    <li class="list-group-item"><strong>Направление:</strong>{{student.course.name}}</li>
-    <li class="list-group-item"><strong>Учитель:</strong>{{student.course.teacher}}</li>
-    <li class="list-group-item"><strong>E-mail:</strong>{{student.email}}</li>
-    <li class="list-group-item">
-      <strong>Описание:</strong><br>
-      {{student.description}}
-    </li>
-  </ul>
+<div class="row">
+  <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12" style="display: flex;-ms-align-items: center;  align-items: center; justify-content: center; -webkit-flex-direction: column;-ms-flex-direction: column;flex-direction: column;">
+    <center> <img src="{{student.avatar.url}}" class='img-fluid' style='height: 200px;width: 200px;' alt="картинка юзера"></center></div>
+  <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12">
+    <h1>{{student.first_name}} {{student.last_name}}</h1>
+    {%if student.is_been == True%} <center><h6 class="text-info">Бывалый боец!</h6></center>{%endif%}
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Комната:</strong> {{student.room}}</li>
+      <li class="list-group-item"><strong>Направление:</strong>{{student.course.name}}</li>
+      <li class="list-group-item"><strong>Учитель:</strong>{{student.course.teacher}}</li>
+      <li class="list-group-item"><strong>E-mail:</strong>{{student.email}}</li>
+      <li class="list-group-item">
+        <strong>Описание:</strong><br>
+        {{student.description}}
+      </li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+
   <div class="row" style="margin-top: 30px;">
     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 ">
       <form method='post' action="/student?id={{student.id}}">
@@ -37,12 +45,18 @@
         <div class="form-group">
           <textarea name="text"class="form-control" placeholder="Введите свой комментарий"></textarea>
         </div>
+        <div class="form-check mb-3 ">
+            <input class="form-check-input" type="checkbox" name="status" id="defaultCheck1">
+          <label class="form-check-label" for="defaultCheck1">
+            Это очень важно?
+          </label>
+        </div>
         <button class="btn  btn-primary" type="submit">Оставить комментарий</button>
       </form>
     </div>
     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"  style="height:200px;owerflow:auto;">
         {%for comment in comments%}
-  <div class="card">
+  <div class="card" style='{%if comment.status == True%}border:2px dashed red;{%endif%}'>
     <div class="card-header">Комментарий от <span class="text-primary">{{comment.author.username}}</span></div>
       <div class="card-body">
         <blockquote class="blockquote mb-0">

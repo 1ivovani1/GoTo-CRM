@@ -21,7 +21,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',index),
+    path('',showShifts),
+    path('shift',index),
+    path('add-shift',addShift),
+    path('shift-finish',shiftFinish),
     path('student',details),
     path('add',add),
     path('edit',edit),

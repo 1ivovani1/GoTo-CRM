@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Смены</title>
+  <link href="https://fonts.googleapis.com/css?family=Comfortaa|Lexend+Exa|Titillium+Web&display=swap" rel="stylesheet">  <title>Document</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" style='margin-bottom: 2%;'>
+    <a class="navbar-brand" href="/">GoToCRM</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+              <li class="nav-item">
+                  <a class="nav-link" href="/logout">Выйти</a>
+              </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+<div class="row">
+  <div class="col-3">
+    <div class="alert alert-info" role="alert">
+      <a href="/add-shift" style="text-decoration: none;"><center>Начать смену</center></a>
+    </div>
+  </div>
+</div>
+  <h1>Смены GoTo</h1>
+  <form class="form-inline my-2 my-lg-0" >
+      <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди смену" aria-label="Search" id="search">
+  </form>
+  <ul id='students' class="list-group">
+    {% for shift  in shifts%}
+      <li class="list-group-item"><a style='text-decoration: none;' href="/shift?id={{shift.id}}">{{shift.name_shift}}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+  <script src="static/search.js"></script>
+
+
+</body>
+</html>

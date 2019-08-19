@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from crm.models import Student,Course,Token,Comment,CustomUser
+from crm.models import *
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import Group
 from django import forms
@@ -112,17 +112,90 @@ def passReset(request):
 def sucessRender(request):
     return render(request,'sucess-send.html')
 
+shiftNow = {}
+
+def shiftFinish(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        shift = Shift.objects.get(pk=int(id))
+        students = Student.objects.filter(shift = shift)
+
+        return render(request,'shift-finish.html',{'students':students,'shift':shiftNow["shift_name"]})
+    if request.method == 'POST':
+        id = request.GET.get('id')
+        shift = Shift.objects.get(pk=int(id))
+        shift.is_finished = True
+        shift.save()
+        students = Student.objects.filter(shift = shift)
+
+        for i in students:
+            mark = request.POST.get(f'mark{i.id}','')
+            i.mark = mark
+            i.save()
+
+
+
+        return redirect('/')
+
 #main work
 def index(request):
     if not request.user.is_authenticated:
         return redirect('/login')
-    students = Student.objects.all()
-    isAdmin = False
 
-    if request.user.groups.filter(name='Admin').exists():
-        isAdmin = True
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        shift = Shift.objects.get(pk=int(id))
+        students = Student.objects.filter(shift = shift)
 
-    return render(request,"index.html",{"students":students,'isAdmin':isAdmin})
+        shift_status = students[0].mark == None
+
+        shiftNow["shift_name"] = shift
+
+        return render(request,"index.html",{'students':students,'shift':shiftNow["shift_name"],'shift_status':shift_status})
+
+
+def addShift(request):
+    if request.method == 'GET':
+        return render(request,'add-shift.html')
+    if request.method == 'POST':
+        shift = Shift()
+        if Shift.objects.filter(name_shift=request.POST.get('name_shift')).exists():
+            return HttpResponse('Такая смена уже была,не стоит повторять это снова')
+        else:
+            shift.name_shift = request.POST.get('name_shift')
+            shift.save()
+
+            allStudents = request.POST.get('pupils')
+            student = allStudents.split('\n')
+
+
+            for i in student:
+                part = i.split(' ')
+                is_been = False
+                if Student.objects.filter(first_name = part[0],last_name = part[1]).exists():
+                    is_been = True
+                student = Student()
+                student.first_name = part[0]
+                student.last_name = part[1]
+                student.room = part[2]
+                student.shift = shift
+                student.is_been = is_been
+
+                student.save()
+
+
+            return redirect(f'/shift?id={shift.id}')
+
+def showShifts(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    shifts = Shift.objects.all()
+    return render(request,'shift-list.html',{"shifts":shifts})
+
+
+
 def details(request):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -132,16 +205,14 @@ def details(request):
         user = request.user
         student = Student.objects.get(pk = id)
         comments = Comment.objects.filter(whom_comm = id).order_by('-id')
-        isAdmin = False
-        if request.user.groups.filter(name='Admin').exists():
-            isAdmin = True
+        return render(request,'details.html',{"student":student,'user':user,'comments':comments,'shift':shiftNow['shift_name']})
 
-        return render(request,'details.html',{"student":student,'user':user,'comments':comments,'isAdmin':isAdmin})
     if request.method == 'POST':
 
         comment_text = request.POST.get('text','')
         id = request.GET.get('id')
         student = Student.objects.get(pk = id)
+        comment_status = request.POST.get('status')
 
 
         if comment_text == '':
@@ -151,18 +222,21 @@ def details(request):
 
 
         comment = Comment()
+        comment.status = False
+        if comment_status == "on":
+            comment.status = True
         comment.text = comment_text
         comment.author = request.user
         comment.whom_comm = student
         comment.save()
         return redirect('/student?id={}'.format(student.id))
+
 def add(request):
     if not request.user.is_authenticated:
         return redirect('/login')
     if request.method == 'GET':
-        if request.user.groups.filter(name='Admin').exists():
-            courses = Course.objects.all()
-            return render(request,'add.html',{'courses':courses})
+        courses = Course.objects.all()
+        return render(request,'add.html',{'courses':courses,'shift':shiftNow['shift_name']})
 
     if request.method == "POST":
         first_name = request.POST.get("first_name", '')
@@ -171,6 +245,7 @@ def add(request):
         room = request.POST.get('room','')
         email = request.POST.get('email','')
         description = request.POST.get('description','')
+
 
         if first_name == '' or last_name == '' or room == '' or course_id == '' or email == '' or description == '':
             messages.add_message(request, messages.ERROR, 'Заполните все поля!')
@@ -198,8 +273,7 @@ def courseAdd(request):
     if not request.user.is_authenticated:
         return redirect('/login')
     if request.method == 'GET':
-        if request.user.groups.filter(name='Admin').exists():
-            return render(request,'course-add.html')
+        return render(request,'course-add.html',{'shift':shiftNow['shift_name']})
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -208,8 +282,10 @@ def courseAdd(request):
         course = Course()
         course.name = name
         course.teacher = teacher
+        course.shift = shiftNow['shift_name']
         course.save()
-    return redirect('/course-descript?id={}'.format(course.id))
+        return redirect('/course-descript?id={}'.format(course.id))
+
 def courseDescript(request):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -219,7 +295,7 @@ def courseDescript(request):
     id = request.GET.get('id')
     course = Course.objects.get(pk=id)
     students = Student.objects.filter(course = course).all()
-    return render(request,'course-descript.html',{'course':course,'students':students,'isAdmin':isAdmin})
+    return render(request,'course-descript.html',{'course':course,'students':students,'isAdmin':isAdmin,'shift':shiftNow['shift_name']})
 
 def courseEdit(request):
     if not request.user.is_authenticated:
@@ -228,7 +304,7 @@ def courseEdit(request):
     if request.method == 'GET':
         if request.user.groups.filter(name='Admin').exists():
             course = Course.objects.get(pk = id)
-            return render(request,'course-edit.html',{"course":course})
+            return render(request,'course-edit.html',{"course":course,'shift':shiftNow['shift_name']})
     if request.method == 'POST':
         name = request.POST.get('name','')
         teacher = request.POST.get('teacher','')
@@ -238,6 +314,7 @@ def courseEdit(request):
         course.teacher = teacher
         course.save()
         return redirect('/course-descript?id={}'.format(id))
+
 def deleteCourse(request):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -246,15 +323,16 @@ def deleteCourse(request):
         course = Course.objects.get(pk = id)
         course.delete()
         return redirect('/course-list')
+
 def edit(request):
     if not request.user.is_authenticated:
         return redirect('/login')
     if request.method == 'GET':
-        if request.user.groups.filter(name='Admin').exists():
-            courses = Course.objects.all()
-            id = request.GET.get('id')
-            student = Student.objects.get(pk = id)
-            return render(request,'change.html',{"student":student,'courses':courses})
+
+        courses = Course.objects.filter(shift=shiftNow['shift_name'])
+        id = request.GET.get('id')
+        student = Student.objects.get(pk = id)
+        return render(request,'change.html',{"student":student,'courses':courses,'shift':shiftNow['shift_name']})
 
     if request.method == "POST":
         if not request.user.is_authenticated:
@@ -278,6 +356,8 @@ def edit(request):
         student.room = room
         student.email = email
         student.description = description
+        if 'avatar' in request.FILES:
+            student.avatar = request.FILES['avatar']
 
         if course_id != '':
             course = Course.objects.get(pk=course_id)
@@ -287,31 +367,38 @@ def edit(request):
         student.save()
 
         return redirect('/student?id={}'.format(student.id))
+
 def delete(request):
     if not request.user.is_authenticated:
         return redirect('/login')
-    if request.user.groups.filter(name='Admin').exists():
-        id = request.GET.get('id')
-        student = Student.objects.get(pk = id)
-        student.delete()
+    id = request.GET.get('id')
+    student = Student.objects.get(pk = id)
+    student.delete()
 
-        return redirect('/')
+    return redirect('/')
+
 def deleteAll(request):
     if not request.user.is_authenticated:
         return redirect('/login')
-    if request.user.groups.filter(name='Admin').exists():
-        students = Student.objects.all()
-        students.delete()
+    students = Student.objects.all()
+    students.delete()
 
-        return redirect('/')
+    return redirect('/')
+
 def showCourses(request):
     if not request.user.is_authenticated:
         return redirect('/login')
+
     isAdmin = False
     if request.user.groups.filter(name='Admin').exists():
         isAdmin = True
-    courses = Course.objects.all()
-    return render(request,'course-list.html',{"courseList":courses,'isAdmin':isAdmin})
+    id = request.GET.get('id')
+    shift = Shift.objects.get(pk=int(id))
+    courses = Course.objects.filter(shift = shift)
+
+
+    return render(request,'course-list.html',{"courseList":courses,'isAdmin':isAdmin,'shift':shiftNow['shift_name']})
+
 def courseInfo(request):
     if not request.user.is_authenticated:
         return redirect('/login')
@@ -320,4 +407,4 @@ def courseInfo(request):
     course = Course.objects.get(pk = id)
     if request.user.groups.filter(name='Admin').exists():
         isAdmin = True
-    return render(request,'course-descript.html',{"course":course,'isAdmin':isAdmin})
+    return render(request,'course-descript.html',{"course":course,'isAdmin':isAdmin,'shift':shiftNow['shift_name']})

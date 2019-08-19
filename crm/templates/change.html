@@ -6,7 +6,7 @@
   </div>
 
 
-<form action="/edit?id={{student.id}}" method="post">
+<form action="/edit?id={{student.id}}" method="post" enctype="multipart/form-data">
   {% csrf_token%}
   <div class="form-group">
     <label>Имя</label>
@@ -25,9 +25,21 @@
     <input type="text" class="form-control" name='email' value="{{student.email}}"><br>
   </div>
   <div class="form-group">
-    <label>Имя</label>
+    <label>Добавить описание</label>
     <textarea name="description" class="form-control">{{student.description}}</textarea><br>
   </div>
+
+  <div class="form-group">
+    <label>Добавить описание</label>
+    <textarea name="description" class="form-control">{{student.description}}</textarea><br>
+  </div>
+
+
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Загрузите фотографию</label>
+    <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1">
+  </div>
+
   <div class="form-group">
     <label>Направление</label>
     <select name="course_id" class="form-control">

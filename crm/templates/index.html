@@ -3,27 +3,43 @@
 
 {%block content%}
 
-{%if isAdmin == True %}
+{%if shift_status %}
 <div class="row">
-  <div class="col-3">
-    <div class="alert alert-info" role="alert">
-      <a href="/add" style="text-decoration: none;"><center>Добавить участника</center></a>
+  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+    <div class="alert alert-info" role="alert" >
+      <a href="/add" style="text-decoration: none;"  >Добавить участника</a>
     </div>
   </div>
-  <div class="col-3">
-    <div class="alert alert-info" role="alert">
-      <a href="/delete-all" style="text-decoration: none;" onclick="return confirm('Вы точно хотите удалить всех?')"><center>Удалить всех</center></a>
-    </div>
+    <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <div class="alert alert-info" role="alert">
+        <a href="/delete-all" style="text-decoration: none;"   onclick="return confirm('Вы точно хотите удалить всех?')">Удалить всех</a>
+     </div>
   </div>
+  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
+    <div class="alert alert-info" role="alert">
+      <a href="/shift-finish?id={{shift.id}}" style="text-decoration: none;"  >Завершить смену</a>
+   </div>
+</div>
 </div>
 {%endif%}
-  <h1 >Участники</h1>
+  <h1 >Участники {{shift.name_shift}}</h1>
   <form class="form-inline my-2 my-lg-0" >
       <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди участника" aria-label="Search" id="search">
   </form>
   <ul id='students' class="list-group">
     {% for student  in students%}
-      <li class="list-group-item"><a style='text-decoration: none;' href="/student?id={{student.id}}">{{student.first_name}} {{student.last_name}}</a></li>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-10">
+            <a style='text-decoration: none;' href="/student?id={{student.id}}">{{student.first_name}} {{student.last_name}}</a>
+          </div>
+          {%if student.mark != None %}
+          <div class="col-2">
+            <p><span class="text-danger">Оценка студента:</span> {{student.mark}}</p>
+          </div>
+          {%endif%}
+        </div>
+       </li>
     {% endfor %}
   </ul>
 

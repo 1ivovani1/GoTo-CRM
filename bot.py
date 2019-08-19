@@ -6,7 +6,7 @@ import uuid
 from telebot import types
 os.environ["DJANGO_SETTINGS_MODULE"] = 'GoToHelper.settings'
 django.setup()
-from crm.models import Student, Course, Comment,CustomUser
+from crm.models import Student, Course, Comment,CustomUser,Shift
 
 telebot.apihelper.proxy = {'https': 'socks5h://geek:socks@t.geekclass.ru:7777'}
 bot = telebot.TeleBot(token)
@@ -42,10 +42,13 @@ class States:
 
 def get_name(message, state):
     data = message.text.split()
+
     if len(data) != 2:
         bot.send_message(message.chat.id, 'Заполните поле правильно')
     else:
-        students = Student.objects.all().filter(first_name=data[0], last_name=data[1])
+        shift = Shift.objects.filter(is_finished=False).first()
+        print(shift)
+        students = Student.objects.filter(first_name=data[0], last_name=data[1],shift = shift).all()
         if not students:
             bot.send_message(message.chat.id, 'Такого участника нет в базе данных')
         else:
