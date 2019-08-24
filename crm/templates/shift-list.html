@@ -7,11 +7,20 @@
   <title>Смены</title>
   <link href="https://fonts.googleapis.com/css?family=Comfortaa|Lexend+Exa|Titillium+Web&display=swap" rel="stylesheet">  <title>Document</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+<style>
+  .close{
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+  }
+  .close:hover{
+      transform: scale(1.2);
+  }
+</style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style='margin-bottom: 2%;'>
-    <a class="navbar-brand" href="/">GoToCRM</a>
+    <a class="navbar-brand" href="/"><img src="static/img/logo.jpg" class="img-fluid" style="height: 50px;width: 50px;" alt=""><span class="ml-2 text-info">CRM</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -26,24 +35,58 @@
 </nav>
 <div class="container">
 <div class="row">
-  <div class="col-3">
+  {%if activeShifts == False%}
+  <div class="col-6">
     <div class="alert alert-info" role="alert">
       <a href="/add-shift" style="text-decoration: none;"><center>Начать смену</center></a>
     </div>
   </div>
+  {%endif%}
+   {%if activeShifts == True%}
+   <div class="col-12" id="close-alert" style="display:flex;align-items:center;justify-content: center;flex-direction:column;">
+     <div class="alert alert-danger" style="display:flex;align-items:center;justify-content: space-around;flex-direction:row;" role="alert">
+      <h5 style="margin: 0;padding: 0;">Для того,чтобы начать новую смену,вам необходимо завершить текущую!</h5>
+      <img src="static/img/delete-button.svg" style="height: 20px;width: 20px; margin-left: 5px;padding: 0;" id="alert-btn-close" class="close" alt="">
+     </div>
+   </div>
+   {%endif%}
 </div>
   <h1>Смены GoTo</h1>
   <form class="form-inline my-2 my-lg-0" >
       <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди смену" aria-label="Search" id="search">
   </form>
   <ul id='students' class="list-group">
-    {% for shift  in shifts%}
-      <li class="list-group-item"><a style='text-decoration: none;' href="/shift?id={{shift.id}}">{{shift.name_shift}}</a></li>
+    <h5 class="text-danger mt-1 ml-2">Активная смена(-ы)</h5>
+    {% for shift  in unFinishedShifts%}
+      <li class="list-group-item" style="display:flex;justify-content: space-between;align-items:center;">
+        <a style='text-decoration: none;' href="/shift?id={{shift.id}}">{{shift.name_shift}}</a>
+        <a href="/shift-finish?id={{shift.id}}" class="close" style="text-decoration: none;"><img src="static/img/delete-button.svg" style="height: 25px;width: 25px;" alt=""></a>
+    </li>
     {% endfor %}
+
+    {%if finishedShifts%}
+    <h5 class="text-success mt-3 ml-2">Прошедшие смены</h5>
+    {%for shift in finishedShifts%}
+    <li class="list-group-item"><a style='text-decoration: none;' href="/shift?id={{shift.id}}">{{shift.name_shift}}</a></li>
+    {%endfor%}
+    {%endif%}
   </ul>
 </div>
-  <script src="static/search.js"></script>
 
+<nav class="navbar fixed-bottom bg-light" style="display:flex;justify-content: space-between;align-items:center;">
+  <h5 class="navbar-brand text-primary" style="margin: 0;padding: 0; ">&copy;GoTo&trade; - All rights reserved.</h5>
+  <small>Made by Alexander Yaroslavskiy</small>
+</nav>
+  <script src="static/search.js"></script>
+  <script type="text/javascript">
+    const windowAlert = document.getElementById('close-alert'),
+          closeBtn = document.getElementById('alert-btn-close');
+    closeBtn.addEventListener('click',(e) => {
+      e.preventDefault();
+      windowAlert.style.display = 'none';
+    });
+
+  </script>
 
 </body>
 </html>

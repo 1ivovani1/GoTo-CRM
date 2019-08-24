@@ -1,55 +1,56 @@
 {% extends 'base.html'%}
   {%block title%}Изменить{%endblock%}
   {%block content%}
-  <div class="alert alert-info" role="alert">
+  <div class="alert alert-info col-2" style="display:flex;align-items:center;justify-content: center;" role="alert">
     <a style="text-decoration: none;" href="/student?id={{student.id}}">{{student.first_name}}</a>
   </div>
 
+<div class="row">
+  <div class="col-7">
+    <form action="/edit?id={{student.id}}" method="post" enctype="multipart/form-data">
+      {% csrf_token%}
+      <div class="form-group">
+        <label>Имя</label>
+        <input class="form-control" type="text" name='first_name' value="{{student.first_name}}">
+      </div>
+      <div class="form-group">
+        <label>Фамилия</label>
+        <input type="text" class="form-control" name='last_name' value="{{student.last_name}}">
+      </div>
+      <div class="form-group">
+        <label>Комната</label>
+        <input class="form-control" type="text" name='room' value="{{student.room}}"><br>
+      </div>
+      <div class="form-group">
+        <label>email</label>
+        <input type="text" class="form-control" name='email' value="{{student.email}}"><br>
+      </div>
+      <div class="form-group">
+        <label>Добавить описание</label>
+        <textarea name="description" class="form-control">{{student.description}}</textarea><br>
+      </div>
 
-<form action="/edit?id={{student.id}}" method="post" enctype="multipart/form-data">
-  {% csrf_token%}
-  <div class="form-group">
-    <label>Имя</label>
-    <input class="form-control" type="text" name='first_name' value="{{student.first_name}}">
-  </div>
-  <div class="form-group">
-    <label>Фамилия</label>
-    <input type="text" class="form-control" name='last_name' value="{{student.last_name}}">
-  </div>
-  <div class="form-group">
-    <label>Комната</label>
-    <input class="form-control" type="text" name='room' value="{{student.room}}"><br>
-  </div>
-  <div class="form-group">
-    <label>email</label>
-    <input type="text" class="form-control" name='email' value="{{student.email}}"><br>
-  </div>
-  <div class="form-group">
-    <label>Добавить описание</label>
-    <textarea name="description" class="form-control">{{student.description}}</textarea><br>
-  </div>
+      <div class="form-group">
+        <label for="exampleFormControlFile1">Загрузите фотографию</label>
+        <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1">
+      </div>
 
-  <div class="form-group">
-    <label>Добавить описание</label>
-    <textarea name="description" class="form-control">{{student.description}}</textarea><br>
+      <div class="form-group">
+        <label>Направление</label>
+        <select name="course_id" class="form-control">
+        <option value="">Нет</option>
+           {%for course in courses%}
+           <option value="{{course.id}}" {% if course.id == student.course.id %} selected {%endif%}>{{course.name}}</option>
+          {%endfor%}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-outline-primary">Подтвердить!</button>
+    </form>
   </div>
-
-
-  <div class="form-group">
-    <label for="exampleFormControlFile1">Загрузите фотографию</label>
-    <input type="file" class="form-control-file" name="avatar" id="exampleFormControlFile1">
+  <div class="col-5">
+    <img src="static/img/edit.jpg" class="img-fluid rounded" alt="">
   </div>
+</div>
 
-  <div class="form-group">
-    <label>Направление</label>
-    <select name="course_id" class="form-control">
-    <option value="">Нет</option>
-       {%for course in courses%}
-       <option value="{{course.id}}" {% if course.id == student.course.id %} selected {%endif%}>{{course.name}}</option>
-      {%endfor%}
-    </select>
-  </div>
-  <button type="submit" class="btn btn-outline-primary">Подтвердить!</button>
-</form>
 
 {%endblock%}

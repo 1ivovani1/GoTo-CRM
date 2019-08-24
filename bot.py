@@ -47,7 +47,6 @@ def get_name(message, state):
         bot.send_message(message.chat.id, 'Заполните поле правильно')
     else:
         shift = Shift.objects.filter(is_finished=False).first()
-        print(shift)
         students = Student.objects.filter(first_name=data[0], last_name=data[1],shift = shift).all()
         if not students:
             bot.send_message(message.chat.id, 'Такого участника нет в базе данных')

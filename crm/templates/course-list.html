@@ -4,13 +4,39 @@
 {%block content%}
 <h1>Курсы {{shift.name_shift}}</h1>
 
-<div class="alert alert-info" role="alert">
-  <a style="text-decoration: none;" href="/add-course">Добавить курс</a>
+{% if shift.is_finished == False %}
+<div class="row">
+  <div class="col-6">
+    <div class="alert alert-info" role="alert">
+      <a style="text-decoration: none;" href="/add-course">Добавить курс</a>
+    </div>
+  </div>
 </div>
+{% endif %}
 
+
+{% if unFinishedCourses %}
+  <h5 class="text-danger">Активные курсы в {{shift.name_shift}}</h5>
 <ul class="list-group">
-    {% for course in courseList%}
+    {% for course in unFinishedCourses%}
       <li class="list-group-item"><a style="text-decoration: none;" href="/course-descript?id={{course.id}}">{{course.name}}</a></li>
    {%endfor%}
   </ul>
+{% endif %}
+
+
+{% if finishedCourses and unFinishedCourses %}
+  <hr>
+{% endif %}
+
+{% if finishedCourses %}
+
+  <h5 class="text-success">Завершенные курсы курсы в {{shift.name_shift}}</h5>
+  <ul class="list-group">
+      {% for course in finishedCourses%}
+        <li class="list-group-item"><a style="text-decoration: none;" href="/course-descript?id={{course.id}}">{{course.name}}</a></li>
+     {%endfor%}
+    </ul>
+{% endif %}
+
 {%endblock%}

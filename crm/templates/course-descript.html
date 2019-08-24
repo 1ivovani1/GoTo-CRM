@@ -5,27 +5,148 @@
 
 
   <div class="row">
-    <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
-      <div class="alert alert-info" role="alert" >
-      <a style="text-align: center" href="/edit-course?id={{course.id}}"><center>Изменить</center></a>
+    <div class="col-6">
+      <div class="alert alert-success" role="alert" >
+      <a style="text-align: center" href="/edit-course?id={{course.id}}"><center class="text-success">Изменить</center></a>
     </div>
     </div>
-      <div class="col-lg-2 col-xl-2 col-md-2 col-sm-4">
-      <div class="alert alert-info" role="alert">
-       <a style="text-align: center;" href="/delete-course?id={{course.id}}" onclick="return confirm('Точно хотите удалить!')"><center>Удалить</center></a>
+      <div class="col-6">
+      <div class="alert alert-danger" role="alert">
+       <a style="text-align: center;" href="/delete-course?id={{course.id}}" onclick="return confirm('Точно хотите удалить!')"><center class="text-danger">Удалить</center></a>
      </div>
     </div>
   </div>
+{% if course.is_finished == False %}
 
-  <h1>{{course.name}}</h1>
+  <div class="row" style="display:flex;align-items:center;justify-content:space-around;flex-direction:row;">
+    {% if students %}
+    <button type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#exampleModal">
+        Завершить курс и выставить отметки!
+      </button>
+      {% endif %}
+      <button type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#addPeople">
+        Добавить учеников на курс!
+      </button>
+  </div>
+  {% endif %}
+
+  <h1 style="margin-top: 3%;">{{course.name}}</h1>
   <ul class="list-group">
     <li class="list-group-item"><strong>Название курса:</strong> {{course.name}}</li>
     <li class="list-group-item"><strong>Учитель:</strong>{{course.teacher}}</li>
   </ul>
-  <h2>Список ученков на курсе {{course.name}}</h2>
+  {% if students %}
+  <h2 style="margin-top: 3%;">Список ученков на курсе {{course.name}}</h2>
   <ol class="list-group">
     {% for student in students %}
-      <li class="list-group-item"><a href="/student?id={{student.id}}">{{student}}</a></li>
+      <li class="list-group-item">
+      <div class="row">
+        <div class="col-4" style="display:flex;align-items:flex-start;justify-content: space-around;flex-direction:column;">
+          <a href="/student?id={{student.id}}" style="display:flex;justify-content: space-around;align-items:center;flex-direction:row;"><span style="margin-right: 10px;" class="text-primary">{{student}}</span></a>
+        </div>
+          <div class="col-4" style="display:flex;align-items:flex-start;justify-content: space-around;flex-direction:column;">
+            <a href="/student?id={{student.id}}"><img class="img-fluid" style="height: 100px;width: 100px;" src="{{student.avatar.url}}" alt=""></a>
+          </div>
+
+        {% if course.is_finished == True %}
+        <div class="col-4" style="display:flex;align-items:center;justify-content: center;flex-direction:column;">
+            <h6 style="padding: 0;margin: 0;">Оценка студента:<span class="text-danger">{{markDict|get_item:student.id}}</span></h6>
+        </div>
+        {% endif %}
+      </div>
+      </li>
     {% endfor %}
   </ol>
-  {%endblock%}
+  {% endif %}
+
+
+{% if course.is_finished == False %}
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Завершение курса <span class="text-success">{{course.name}}</span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+          <h2>Список ученков на курсе {{course.name}}</h2>
+          <ol class="list-group">
+            {% for student in students %}
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-8" style="display:flex;justify-content: center;align-items:flex-start;flex-direction:column;">
+                    <h6 style="margin: 0;padding: 0;">{{student}}</h6>
+                  </div>
+                  <div class="col-4">
+                    <input type="number" name='mark{{ student.id }}' class="form-control" placeholder="Отметка">
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+        <input type="hidden" name="send_marks" value="marks">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+          <button type="submit" class="btn btn-primary" onclick="return confirm('Вы уверены?')">Завершить</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal fade" id="addPeople" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="post">
+        {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Добавить учеников на курс {{course.name}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-inline my-2 my-lg-0" >
+            <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди участника" aria-label="Search" id="search">
+        </div>
+        <ul class="list-group" id="students">
+          {% for student in noCourseStudents %}
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-6" style="display:flex;justify-content: center;align-items:flex-start;flex-direction:column;">
+                  <a style="margin: 0;padding: 0;">{{student}}</a>
+                </div>
+                <div class="col-6">
+                  <div class="form-check">
+                    <input class="form-check-input" name='addTo{{ student.id }}' type="checkbox" value="send" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                      Добавить на курс?
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+<script src="static/search.js"></script>
+
+{%endblock%}

@@ -3,7 +3,7 @@
 
 {%block content%}
 
-  <h1 >Участники</h1>
+  <h1 >Завершение смены {{shift.name_shift}}</h1>
   <form class="form-inline my-2 my-lg-0" >
       <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди участника" aria-label="Search" id="search">
   </form>
@@ -15,9 +15,6 @@
         <div class="row">
           <div class="col-10">
             <a style='text-decoration: none;' href="/student?id={{student.id}}">{{student.first_name}} {{student.last_name}}</a>
-          </div>
-          <div class="col-2">
-            <input type="text" name="mark{{ student.id }}" class="form-control" placeholder="Оценка">
           </div>
         </div>
       </li>

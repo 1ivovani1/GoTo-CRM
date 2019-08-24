@@ -3,45 +3,57 @@
 
 {%block content%}
 
-{%if shift_status %}
+{% if shift.is_finished == False %}
 <div class="row">
-  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-    <div class="alert alert-info" role="alert" >
-      <a href="/add" style="text-decoration: none;"  >Добавить участника</a>
+  <div class="col-lg-4 col-xl-4 col-md-4 col-sm-12">
+    <div class="alert alert-primary" role="alert"  style="display:flex; align-items:center; justify-content: center;">
+      <a href="/add" style="text-decoration: none;"  ><span class="text-primary">Добавить участника</span></a>
     </div>
   </div>
-    <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-      <div class="alert alert-info" role="alert">
-        <a href="/delete-all" style="text-decoration: none;"   onclick="return confirm('Вы точно хотите удалить всех?')">Удалить всех</a>
+    <div class="col-lg-4 col-xl-4 col-md-4 col-sm-12">
+      <div class="alert alert-danger" role="alert" style="display:flex; align-items:center; justify-content: center;">
+        <a href="/delete-all" style="text-decoration: none;"   onclick="return confirm('Вы точно хотите удалить всех?')"><span class="text-danger">Удалить всех</span></a>
      </div>
   </div>
-  <div class="col-lg-6 col-xl-6 col-md-6 col-sm-12">
-    <div class="alert alert-info" role="alert">
-      <a href="/shift-finish?id={{shift.id}}" style="text-decoration: none;"  >Завершить смену</a>
+  <div class="col-lg-4 col-xl-4 col-md-4 col-sm-12">
+    <div class="alert alert-success" role="alert" style="display:flex; align-items:center; justify-content: center;">
+      <a href="/shift-finish?id={{shift.id}}" style="text-decoration: none;"  ><span class="text-success">Завершить смену</span></a>
    </div>
 </div>
 </div>
-{%endif%}
+{% endif %}
+
   <h1 >Участники {{shift.name_shift}}</h1>
   <form class="form-inline my-2 my-lg-0" >
       <input class="form-control mr-sm-2" style="margin-bottom: 10px; width: 50%;" type="search" placeholder="Найди участника" aria-label="Search" id="search">
   </form>
+
+  <form id="way" method="post">
+    {%csrf_token%}
   <ul id='students' class="list-group">
     {% for student  in students%}
       <li class="list-group-item">
         <div class="row">
-          <div class="col-10">
+          <div class="col-8" style="display: -webkit-flex;display: -ms-flex;display: flex;-ms-align-items: flex-start;align-items: flex-start; justify-content: center; -webkit-flex-direction: column;-ms-flex-direction: column;flex-direction: column;">
             <a style='text-decoration: none;' href="/student?id={{student.id}}">{{student.first_name}} {{student.last_name}}</a>
           </div>
-          {%if student.mark != None %}
-          <div class="col-2">
-            <p><span class="text-danger">Оценка студента:</span> {{student.mark}}</p>
+          {% if shift.is_finished != True %}
+          <div class="form-group">
+            <label>Направление</label>
+            <select name="course_id{{ student.id }}" class="form-control form_to_change">
+            <option value="-1">Нет</option>
+               {%for course in courses%}
+                 <option value="{{course.id}}" {% if course == student.current_course %} selected {% endif %}>{{course.name}}</option>
+               {%endfor%}
+            </select>
           </div>
-          {%endif%}
+          {% endif %}
         </div>
        </li>
     {% endfor %}
   </ul>
+  </form>
 
   <script src="static/search.js"></script>
+  <script src="static/form-submit.js"></script>
 {%endblock%}
