@@ -80,6 +80,7 @@
         <button class="btn  btn-primary" type="submit">Оставить комментарий</button>
       </form>
     </div>
+    {% endif %}
     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6"  style="height:200px;owerflow:auto;">
         {%for comment in comments%}
   <div class="card" style='{%if comment.status == True%}border:2px dashed red;{%endif%}'>
@@ -95,6 +96,6 @@
     </div>
   </div>
 
-{% endif %}
+
 
   {%endblock%}
